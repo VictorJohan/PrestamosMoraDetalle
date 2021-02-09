@@ -7,7 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace RegistroPrestamoBlazor.BLL
+namespace PrestamosMoraDetalle.BLL
 {
     public class PersonasBLL
     {
@@ -49,7 +49,7 @@ namespace RegistroPrestamoBlazor.BLL
 
             try
             {
-               await Contexto.Personas.AddAsync(persona);
+                await Contexto.Personas.AddAsync(persona);
                 ok = await Contexto.SaveChangesAsync() > 0;
             }
             catch (Exception)
@@ -64,14 +64,14 @@ namespace RegistroPrestamoBlazor.BLL
         private async Task<bool> Modificar(Personas persona)
         {
             bool ok = false;
-            
+
             try
             {
                 var aux = Contexto
                     .Set<Personas>()
                     .Local.FirstOrDefault(p => p.PersonaId == persona.PersonaId);
 
-                if(aux != null)
+                if (aux != null)
                 {
                     Contexto.Entry(aux).State = EntityState.Detached;
                 }
@@ -115,7 +115,7 @@ namespace RegistroPrestamoBlazor.BLL
             try
             {
                 var registro = await Contexto.Personas.FindAsync(id);
-                if(registro != null)
+                if (registro != null)
                 {
                     Contexto.Entry(registro).State = EntityState.Deleted;
                     ok = await Contexto.SaveChangesAsync() > 0;

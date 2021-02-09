@@ -7,12 +7,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace RegistroPrestamoBlazor.BLL
+namespace PrestamosMoraDetalle.BLL
 {
     public class PrestamosBLL
     {
         private Contexto Contexto { get; set; }
-        
+
         public PrestamosBLL(Contexto contexto)
         {
             this.Contexto = contexto;
