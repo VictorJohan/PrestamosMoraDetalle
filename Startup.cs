@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PrestamosMoraDetalle.BLL;
 using PrestamosMoraDetalle.DAL;
 using PrestamosMoraDetalle.Data;
 using System;
@@ -34,6 +35,11 @@ namespace PrestamosMoraDetalle
             services.AddDbContext<Contexto>(options => 
                     options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
             );
+
+            //INYECCION DE BLLs
+            services.AddTransient<PersonasBLL>();
+            services.AddTransient<PrestamosBLL>();
+            services.AddTransient<MorasBLL>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
