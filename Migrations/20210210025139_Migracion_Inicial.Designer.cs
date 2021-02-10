@@ -9,7 +9,7 @@ using PrestamosMoraDetalle.DAL;
 namespace PrestamosMoraDetalle.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20210209205249_Migracion_Inicial")]
+    [Migration("20210210025139_Migracion_Inicial")]
     partial class Migracion_Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,7 +59,7 @@ namespace PrestamosMoraDetalle.Migrations
                     b.ToTable("MorasDetalle");
                 });
 
-            modelBuilder.Entity("RegistroPrestamoBlazor.Models.Personas", b =>
+            modelBuilder.Entity("PrestamosMoraDetalle.Models.Personas", b =>
                 {
                     b.Property<int>("PersonaId")
                         .ValueGeneratedOnAdd()
@@ -92,7 +92,7 @@ namespace PrestamosMoraDetalle.Migrations
                     b.ToTable("Personas");
                 });
 
-            modelBuilder.Entity("RegistroPrestamoBlazor.Models.Prestamos", b =>
+            modelBuilder.Entity("PrestamosMoraDetalle.Models.Prestamos", b =>
                 {
                     b.Property<int>("PrestamoId")
                         .ValueGeneratedOnAdd()
@@ -129,7 +129,7 @@ namespace PrestamosMoraDetalle.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RegistroPrestamoBlazor.Models.Prestamos", "Prestamo")
+                    b.HasOne("PrestamosMoraDetalle.Models.Prestamos", "Prestamo")
                         .WithMany()
                         .HasForeignKey("PrestamoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -138,9 +138,9 @@ namespace PrestamosMoraDetalle.Migrations
                     b.Navigation("Prestamo");
                 });
 
-            modelBuilder.Entity("RegistroPrestamoBlazor.Models.Prestamos", b =>
+            modelBuilder.Entity("PrestamosMoraDetalle.Models.Prestamos", b =>
                 {
-                    b.HasOne("RegistroPrestamoBlazor.Models.Personas", "Persona")
+                    b.HasOne("PrestamosMoraDetalle.Models.Personas", "Persona")
                         .WithMany()
                         .HasForeignKey("PersonaId")
                         .OnDelete(DeleteBehavior.Cascade)

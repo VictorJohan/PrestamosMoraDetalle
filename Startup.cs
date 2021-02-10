@@ -9,10 +9,12 @@ using Microsoft.Extensions.Hosting;
 using PrestamosMoraDetalle.BLL;
 using PrestamosMoraDetalle.DAL;
 using PrestamosMoraDetalle.Data;
+using Blazored.Toast;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace PrestamosMoraDetalle
 {
@@ -35,6 +37,9 @@ namespace PrestamosMoraDetalle
             services.AddDbContext<Contexto>(options => 
                     options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
             );
+
+            services.AddBlazoredToast();
+            
 
             //INYECCION DE BLLs
             services.AddTransient<PersonasBLL>();

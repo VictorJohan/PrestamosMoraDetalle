@@ -1,4 +1,4 @@
-﻿using RegistroPrestamoBlazor.Models;
+﻿using PrestamosMoraDetalle.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

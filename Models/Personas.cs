@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RegistroPrestamoBlazor.Models
+namespace PrestamosMoraDetalle.Models
 {
     public class Personas
     {

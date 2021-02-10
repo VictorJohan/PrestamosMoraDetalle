@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrestamosMoraDetalle.Models;
-using RegistroPrestamoBlazor.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
