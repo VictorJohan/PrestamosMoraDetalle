@@ -1,0 +1,204 @@
+﻿@page "/Moras"
+@page "/Moras/{MoraId:int}"
+
+@inject IToastService toast
+
+<EditForm Model="mora" OnValidSubmit="Guardar">
+    <div class="card">
+        <div class="card-header">
+            <h3>Registro Moras</h3>
+        </div>
+
+        <div class="card-body">
+            <form>
+                @*Mora Id*@
+                <div class="form-row align-items-center">
+                    <div class="col">
+                        <div class="form-group">
+                            <label>Mora Id</label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="this.MoraId" class="form-control" />
+                                <div class="input-group-append">
+                                    <button type="button" style="z-index:0" class="btn btn-secondary" @onclick="Buscar">Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                @*Fecha*@
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <InputDate @bind-Value="mora.Fecha" class="form-control" />
+                </div>
+
+                @*Total*@
+                <div class="form-group">
+                    <label>Total</label>
+                    <InputNumber @bind-Value="mora.Total" class="form-control" readonly />
+                </div>
+
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-info">
+                <h5 class="text-white">Mora Detalle</h5>
+            </div>
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col form-group">
+                        <label>Prestamo Id</label>
+                        <InputSelect @bind-Value="detalle.PrestamoId" class="form-control">
+                            @foreach (var item in lista)
+                            {
+                                <option value="@item.PrestamoId">@item.PrestamoId</option>
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <div class="col form-group">
+                        <label>Valor</label>
+                        <div class="input-group">
+                            <InputNumber @bind-Value="detalle.Valor" class="form-control" />
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-success" @onclick="Agregar">Agregar</button>
+                                <button type="button" class="btn btn-danger" @onclick="Remover">Remover</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="table-responsive text-nowrap" style="position: relative; height:200px; overflow: auto; display: block;">
+                    <table class="table table-striped">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Prestamo Id</th>
+                                <th>Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            @foreach (var item in mora.MorasDetalles)
+                            {
+                                <tr>
+                                    <td>@item.PrestamoId</td>
+                                    <td>@item.Valor</td>
+
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+            <div class="form-group text-center">
+                <button type="button" class="btn btn-primary" @onclick="Nuevo">Nuevo</button>
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <button type="button" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code{
+    [Inject]
+    public MorasBLL morasBLL { get; set; }
+
+    [Inject]
+    public PrestamosBLL prestamosBLL { get; set; }
+
+    [Parameter]
+    public int MoraId { get; set; }
+
+    private Moras mora = new Moras();
+    private MorasDetalle detalle = new MorasDetalle();
+
+    List<Prestamos> lista = new List<Prestamos>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        lista = await prestamosBLL.GetPrestamos();
+        Limpiar();
+    }
+
+    private async void Buscar()
+    {
+        var registro = await morasBLL.Buscar(this.MoraId);
+
+        if (registro != null)
+        {
+            this.mora = registro;
+        }
+        else
+        {
+            toast.ShowInfo("No se encontro el registro deseado.");
+        }
+    }
+
+    private void Agregar()
+    {
+        detalle.Id = 0;
+        detalle.MoraId = this.MoraId;
+        mora.Total += detalle.Valor;
+
+        mora.MorasDetalles.Add(detalle);
+        detalle = new MorasDetalle();
+    }
+
+    private void Remover()
+    {
+
+    }
+
+
+    private void Nuevo()
+    {
+        Limpiar();
+    }
+
+    private async void Guardar()
+    {
+        mora.MoraId = this.MoraId;
+        if (await morasBLL.Guardar(mora))
+        {
+            toast.ShowSuccess("Guardado.");
+            Limpiar();
+        }
+        else
+        {
+            toast.ShowError("Error al guardar el registro.");
+        }
+    }
+
+    private async void Eliminar()
+    {
+        if (await morasBLL.Eliminar(this.MoraId))
+        {
+            toast.ShowSuccess("Eliminado");
+            Limpiar();
+        }
+        else
+        {
+            toast.ShowError("Error al eliminar el registro.");
+        }
+    }
+
+
+
+
+    private void Limpiar()
+    {
+        this.mora = new Moras();
+        this.MoraId = 0;
+    }
+
+}

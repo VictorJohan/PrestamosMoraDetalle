@@ -15,9 +15,5 @@ namespace PrestamosMoraDetalle.Models
         public int MoraId { get; set; }
         public int PrestamoId { get; set; }
         public double Valor { get; set; }
-
-        [ForeignKey("PrestamoId")]
-        public virtual Prestamos Prestamo { get; set; }
-
     }
 }

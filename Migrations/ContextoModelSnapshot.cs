@@ -52,8 +52,6 @@ namespace PrestamosMoraDetalle.Migrations
 
                     b.HasIndex("MoraId");
 
-                    b.HasIndex("PrestamoId");
-
                     b.ToTable("MorasDetalle");
                 });
 
@@ -126,14 +124,6 @@ namespace PrestamosMoraDetalle.Migrations
                         .HasForeignKey("MoraId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("PrestamosMoraDetalle.Models.Prestamos", "Prestamo")
-                        .WithMany()
-                        .HasForeignKey("PrestamoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Prestamo");
                 });
 
             modelBuilder.Entity("PrestamosMoraDetalle.Models.Prestamos", b =>

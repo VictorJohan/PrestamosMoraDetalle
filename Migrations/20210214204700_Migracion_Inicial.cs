@@ -40,6 +40,27 @@ namespace PrestamosMoraDetalle.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MorasDetalle",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    MoraId = table.Column<int>(type: "INTEGER", nullable: false),
+                    PrestamoId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Valor = table.Column<double>(type: "REAL", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MorasDetalle", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MorasDetalle_Moras_MoraId",
+                        column: x => x.MoraId,
+                        principalTable: "Moras",
+                        principalColumn: "MoraId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Prestamos",
                 columns: table => new
                 {
@@ -62,42 +83,10 @@ namespace PrestamosMoraDetalle.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "MorasDetalle",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    MoraId = table.Column<int>(type: "INTEGER", nullable: false),
-                    PrestamoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Valor = table.Column<double>(type: "REAL", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MorasDetalle", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MorasDetalle_Moras_MoraId",
-                        column: x => x.MoraId,
-                        principalTable: "Moras",
-                        principalColumn: "MoraId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MorasDetalle_Prestamos_PrestamoId",
-                        column: x => x.PrestamoId,
-                        principalTable: "Prestamos",
-                        principalColumn: "PrestamoId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_MorasDetalle_MoraId",
                 table: "MorasDetalle",
                 column: "MoraId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MorasDetalle_PrestamoId",
-                table: "MorasDetalle",
-                column: "PrestamoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prestamos_PersonaId",
@@ -111,10 +100,10 @@ namespace PrestamosMoraDetalle.Migrations
                 name: "MorasDetalle");
 
             migrationBuilder.DropTable(
-                name: "Moras");
+                name: "Prestamos");
 
             migrationBuilder.DropTable(
-                name: "Prestamos");
+                name: "Moras");
 
             migrationBuilder.DropTable(
                 name: "Personas");

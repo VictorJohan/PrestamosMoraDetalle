@@ -47,11 +47,6 @@ namespace PrestamosMoraDetalle.BLL
 
             try
             {
-                foreach (var item in moras.MorasDetalles)
-                {
-                    contexto.Entry(item.Prestamo).State = EntityState.Modified;
-                }
-
                 await contexto.Moras.AddAsync(moras);
                 ok = await contexto.SaveChangesAsync() > 0;
             }
@@ -69,11 +64,7 @@ namespace PrestamosMoraDetalle.BLL
             bool ok = false;
             try
             {
-                var aux = contexto.Set<Moras>().Local.FirstOrDefault(m => m.MoraId == moras.MoraId);
-                if(aux != null)
-                {
-                    contexto.Entry(aux).State = EntityState.Detached;
-                }
+                Detached(moras.MoraId);
 
                 contexto.Database.ExecuteSqlRaw($"Delete FROM MorasDetalle Where MoraId={moras.MoraId}");
                 foreach (var item in moras.MorasDetalles)
@@ -84,7 +75,7 @@ namespace PrestamosMoraDetalle.BLL
                 contexto.Entry(moras).State = EntityState.Modified;
 
                 ok = await contexto.SaveChangesAsync() > 0;
-                
+
             }
             catch (Exception)
             {
@@ -103,7 +94,6 @@ namespace PrestamosMoraDetalle.BLL
             {
                 moras = await contexto.Moras.Where(m => m.MoraId == id)
                     .Include(d => d.MorasDetalles)
-                    .ThenInclude(p => p.Prestamo)
                     .AsNoTracking()
                     .SingleOrDefaultAsync();
             }
@@ -121,8 +111,9 @@ namespace PrestamosMoraDetalle.BLL
             bool ok = false;
             try
             {
+                Detached(id);
                 var registro = await Buscar(id);
-                if(registro != null)
+                if (registro != null)
                 {
                     contexto.Moras.Remove(registro);
                     ok = await contexto.SaveChangesAsync() > 0;
@@ -169,6 +160,15 @@ namespace PrestamosMoraDetalle.BLL
             }
 
             return lista;
+        }
+
+        private void Detached(int id)
+        {
+            var aux = contexto.Set<Moras>().Local.FirstOrDefault(m => m.MoraId == id);
+            if (aux != null)
+            {
+                contexto.Entry(aux).State = EntityState.Detached;
+            }
         }
     }
 

@@ -9,7 +9,7 @@ using PrestamosMoraDetalle.DAL;
 namespace PrestamosMoraDetalle.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20210210025139_Migracion_Inicial")]
+    [Migration("20210214204700_Migracion_Inicial")]
     partial class Migracion_Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,8 +53,6 @@ namespace PrestamosMoraDetalle.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MoraId");
-
-                    b.HasIndex("PrestamoId");
 
                     b.ToTable("MorasDetalle");
                 });
@@ -128,14 +126,6 @@ namespace PrestamosMoraDetalle.Migrations
                         .HasForeignKey("MoraId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("PrestamosMoraDetalle.Models.Prestamos", "Prestamo")
-                        .WithMany()
-                        .HasForeignKey("PrestamoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Prestamo");
                 });
 
             modelBuilder.Entity("PrestamosMoraDetalle.Models.Prestamos", b =>
