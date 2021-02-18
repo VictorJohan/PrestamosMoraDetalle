@@ -19,8 +19,12 @@ namespace PrestamosMoraDetalle.Models
         [Required(ErrorMessage = "Es obligatorio introducir una dirección.")]
         public string Direccion { get; set; }
         [Required(ErrorMessage = "Es obligatorio introducir una fecha de nacimiento")]
-        public DateTime FechaNacimiento { get; set; } = DateTime.Now;
+        public DateTime FechaNacimiento { get; set; } 
         public double Balance { get; set; }
 
+        public Personas()
+        {
+            this.FechaNacimiento = DateTime.Now;
+        }
     }
 }

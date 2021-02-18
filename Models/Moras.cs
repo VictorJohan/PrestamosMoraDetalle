@@ -11,10 +11,15 @@ namespace PrestamosMoraDetalle.Models
     {
         [Key]
         public int MoraId { get; set; }
-        public DateTime Fecha { get; set; } = DateTime.Now;
+        public DateTime Fecha { get; set; }
         public double Total { get; set; }
 
         [ForeignKey("MoraId")]
         public virtual List<MorasDetalle> MorasDetalles { get; set; } = new List<MorasDetalle>();
+
+        public Moras()
+        {
+            this.Fecha = DateTime.Now;
+        }
     }
 }

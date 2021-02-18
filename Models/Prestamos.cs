@@ -11,7 +11,7 @@ namespace PrestamosMoraDetalle.Models
     {
         [Key]
         public int PrestamoId { get; set; }
-        public DateTime Fecha { get; set; } = DateTime.Now;
+        public DateTime Fecha { get; set; }
         [Required(ErrorMessage ="Es obligatorio introducir un concepto.")]
         public string Concepto { get; set; }
         [Range(minimum:100, maximum:1000000)]
@@ -22,5 +22,10 @@ namespace PrestamosMoraDetalle.Models
 
         [ForeignKey("PersonaId")]
         public virtual Personas Persona { get; set; }
+
+        public Prestamos()
+        {
+            this.Fecha = DateTime.Now;
+        }
     }
 }
