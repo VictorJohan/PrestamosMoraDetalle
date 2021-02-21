@@ -9,7 +9,7 @@ using PrestamosMoraDetalle.DAL;
 namespace PrestamosMoraDetalle.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20210221053903_Migracion_Inicial")]
+    [Migration("20210221074204_Migracion_Inicial")]
     partial class Migracion_Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

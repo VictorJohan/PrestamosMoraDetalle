@@ -52,7 +52,7 @@
                 <div class="row">
                     <div class="col form-group">
                         <label>Prestamo Id</label>
-                        <InputSelect @bind-Value="detalle.PrestamoId" class="form-control">
+                        <InputSelect @bind-Value="detalle.PrestamoId" class="form-control" @onclick="GetNombre">
                             @foreach (var item in lista)
                             {
                                 <option value="@item.PrestamoId">@item.PrestamoId</option>
@@ -89,11 +89,11 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white">
-                            @foreach (var item in mora.MorasDetalles)
+                            @foreach (var item in DetalleDTO)
                             {
                                 <tr>
                                     <td>@item.PrestamoId</td>
-                                    <td>@persona.Nombres</td>
+                                    <td>@item.Nombres</td>
                                     <td>@item.Valor</td>
                                     <td><button type="button" class="btn btn-danger" @onclick="() => Remover(item)">Remover</button></td>
 
@@ -129,10 +129,10 @@
 
     [Parameter]
     public int MoraId { get; set; }
-
+    private List<dynamic> DetalleDTO = new List<dynamic>();
     private Moras mora = new Moras();
+    private Personas persona = new Personas();
     private MorasDetalle detalle = new MorasDetalle();
-    Personas persona = new Personas();
     List<Prestamos> lista = new List<Prestamos>();
 
     protected async override Task OnInitializedAsync()
@@ -144,10 +144,10 @@
     private async void Buscar()
     {
         var registro = await morasBLL.Buscar(this.MoraId);
-
         if (registro != null)
         {
             this.mora = registro;
+            SourceDTO(mora.MorasDetalles);
         }
         else
         {
@@ -161,8 +161,11 @@
 
         mora.MorasDetalles.Add(detalle);
 
+        SourceDTO(detalle);
+
         detalle = new MorasDetalle();
         persona = new Personas();
+
     }
 
     private void Remover(MorasDetalle detalle)
@@ -207,6 +210,51 @@
     {
         this.mora = new Moras();
         this.MoraId = 0;
+    }
+
+    private async void SourceDTO(MorasDetalle detalle)
+    {
+        var prestamo = await prestamosBLL.Buscar(detalle.PrestamoId);
+        var persona = await personasBLL.Buscar(prestamo.PersonaId);
+
+        var dto = new
+        {
+            detalle.PrestamoId,
+            persona.Nombres,
+            detalle.Valor,
+        };
+
+        DetalleDTO.Add(dto);
+    }
+
+    private async void SourceDTO(List<MorasDetalle> detalle)
+    {
+        foreach (var item in detalle)
+        {
+            var prestamo = await prestamosBLL.Buscar(item.PrestamoId);
+            var persona = await personasBLL.Buscar(prestamo.PersonaId);
+
+            var dto = new
+            {
+                item.PrestamoId,
+                persona.Nombres,
+                item.Valor,
+            };
+
+            DetalleDTO.Add(dto);
+        }
+
+
+    }
+
+    private async void GetNombre()
+    {
+        if (detalle.PrestamoId != 0)
+        {
+            var prestamo = await prestamosBLL.Buscar(detalle.PrestamoId);
+            persona = await personasBLL.Buscar(prestamo.PersonaId);
+
+        }
     }
 
 }
