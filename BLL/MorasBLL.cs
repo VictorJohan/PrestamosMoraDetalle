@@ -11,12 +11,14 @@ namespace PrestamosMoraDetalle.BLL
 {
     public class MorasBLL
     {
-        private Contexto contexto;
+        private Contexto contexto { get; set; }
+        private PrestamosBLL prestamosBLL { get; set; }
+        
         public MorasBLL(Contexto contexto)
         {
             this.contexto = contexto;
+            this.prestamosBLL = new PrestamosBLL(this.contexto);
         }
-
         public async Task<bool> Guardar(Moras moras)
         {
             if (!await Existe(moras.MoraId))
@@ -49,6 +51,7 @@ namespace PrestamosMoraDetalle.BLL
             {
                 await contexto.Moras.AddAsync(moras);
                 ok = await contexto.SaveChangesAsync() > 0;
+                SumarMoras(moras);
             }
             catch (Exception)
             {
@@ -73,6 +76,7 @@ namespace PrestamosMoraDetalle.BLL
                 }
 
                 contexto.Entry(moras).State = EntityState.Modified;
+                SumarMoras(moras);
 
                 ok = await contexto.SaveChangesAsync() > 0;
 
@@ -113,6 +117,7 @@ namespace PrestamosMoraDetalle.BLL
             {
                 Detached(id);
                 var registro = await Buscar(id);
+                RestarMoras(registro);
                 if (registro != null)
                 {
                     contexto.Moras.Remove(registro);
@@ -168,6 +173,30 @@ namespace PrestamosMoraDetalle.BLL
             if (aux != null)
             {
                 contexto.Entry(aux).State = EntityState.Detached;
+            }
+        }
+
+        private async void SumarMoras(Moras moras)
+        {
+            foreach (var item in moras.MorasDetalles)
+            {
+                var prestamo =contexto.Prestamos.Find(item.PrestamoId);
+
+                prestamo.Balance += item.Valor;
+
+               await prestamosBLL.Guardar(prestamo);
+            }
+        }
+
+        private async void RestarMoras(Moras moras)
+        {
+            foreach (var item in moras.MorasDetalles)
+            {
+                var prestamo = contexto.Prestamos.Find(item.PrestamoId);
+
+                prestamo.Balance -= item.Valor;
+
+                await prestamosBLL.Guardar(prestamo);
             }
         }
     }

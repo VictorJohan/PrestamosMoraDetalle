@@ -52,7 +52,7 @@
                 <div class="row">
                     <div class="col form-group">
                         <label>Prestamo Id</label>
-                        <InputSelect @bind-Value="detalle.PrestamoId" class="form-control"  @onclick="MostrarPersona">
+                        <InputSelect @bind-Value="detalle.PrestamoId" class="form-control">
                             @foreach (var item in lista)
                             {
                                 <option value="@item.PrestamoId">@item.PrestamoId</option>
@@ -62,8 +62,8 @@
 
                     <div class="col form-group">
                         <label>Persona</label>
-                        <InputText @bind-Value="persona.Nombres" class="form-control" readonly/>
-                           
+                        <InputText @bind-Value="persona.Nombres" class="form-control" readonly />
+
                     </div>
 
                     <div class="col form-group">
@@ -168,17 +168,8 @@
     private void Remover(MorasDetalle detalle)
     {
         mora.MorasDetalles.Remove(detalle);
+        mora.Total -= detalle.Valor;
     }
-
-    public async void MostrarPersona()
-    {
-        if (detalle.PrestamoId != 0)
-        {
-            var aux = lista.Find(p => p.PrestamoId == detalle.PrestamoId);
-            persona = await personasBLL.Buscar(aux.PersonaId);
-        }
-    }
-
 
     private void Nuevo()
     {

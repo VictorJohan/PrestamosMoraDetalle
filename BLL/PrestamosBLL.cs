@@ -12,22 +12,22 @@ namespace PrestamosMoraDetalle.BLL
     public class PrestamosBLL
     {
         private Contexto Contexto { get; set; }
-
+       
         public PrestamosBLL(Contexto contexto)
         {
             this.Contexto = contexto;
+            
         }
 
         public async Task<bool> Guardar(Prestamos prestamo)
         {
             if (!await Existe(prestamo.PrestamoId))
             {
-                SumarBalacePersona(prestamo);
+                
                 return await Insertar(prestamo);
             }
             else
             {
-                ModificarBalancePersona(prestamo);
                 return await Modificar(prestamo);
             }
         }
@@ -55,8 +55,10 @@ namespace PrestamosMoraDetalle.BLL
 
             try
             {
+                prestamo.Balance = prestamo.Monto;
                 await Contexto.Prestamos.AddAsync(prestamo);
                 ok = await Contexto.SaveChangesAsync() > 0;
+                SumarBalacePersona(prestamo);
             }
             catch (Exception)
             {
@@ -82,8 +84,12 @@ namespace PrestamosMoraDetalle.BLL
                     Contexto.Entry(aux).State = EntityState.Detached;
                 }
 
-                Contexto.Entry(prestamo).State = EntityState.Modified;
+                prestamo.Balance = prestamo.Monto;
+                prestamo = SumarMorasPrestamos(prestamo);
+                ModificarBalancePersona(prestamo);
 
+                Contexto.Entry(prestamo).State = EntityState.Modified;
+                
                 ok = await Contexto.SaveChangesAsync() > 0;
             }
             catch (Exception)
@@ -177,7 +183,7 @@ namespace PrestamosMoraDetalle.BLL
         {
             Personas persona = await Contexto.Personas.FindAsync(prestamo.PersonaId);
 
-            persona.Balance += prestamo.Monto;
+            persona.Balance += prestamo.Balance;
             Contexto.Entry(persona).State = EntityState.Modified;
             await Contexto.SaveChangesAsync();
         }
@@ -188,7 +194,7 @@ namespace PrestamosMoraDetalle.BLL
             Personas persona = await Contexto.Personas.FindAsync(prestamo.PersonaId);
             var AuxPrestamo = await Buscar(prestamo.PrestamoId);
 
-            persona.Balance -= AuxPrestamo.Monto;
+            persona.Balance -= AuxPrestamo.Balance;
             Contexto.Entry(persona).State = EntityState.Modified;
             await Contexto.SaveChangesAsync();
 
@@ -199,6 +205,33 @@ namespace PrestamosMoraDetalle.BLL
         {
             RestarBalacePersona(prestamo);
             SumarBalacePersona(prestamo);
+        }
+
+        private Prestamos SumarMorasPrestamos(Prestamos prestamo)
+        {
+            var moras = BuscarMoras();
+            foreach (var item in moras)
+            {
+                if (item.PrestamoId == prestamo.PrestamoId)
+                    prestamo.Balance += item.Valor;
+            }
+
+            return prestamo;
+        }
+
+        private List<MorasDetalle> BuscarMoras()
+        {
+            var lista = Contexto.Moras.Include(d => d.MorasDetalles).ToList();
+            List<MorasDetalle> detalles = new List<MorasDetalle>();
+            foreach (var item in lista)
+            {
+                foreach (var item2 in item.MorasDetalles)
+                {
+                    detalles.Add(item2);
+                }
+            }
+
+            return detalles;
         }
     }
 }
